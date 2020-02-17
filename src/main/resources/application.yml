@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: user
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.137.112:3306/cache
+    username: root
+    password: 123456
+  shardingsphere:
+#    orchestration:
+#      name: orchestration-sharding-data-source
+#      overwrite: true
+#      registry:
+#        server-lists: 192.168.137.103:2181
+#        namespace: sharding-jdbc-orchestration
+#        type: zookeeper
+    datasource:
+      ds0:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        password: 123456
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://192.168.137.112:3306/ds0
+        username: root
+      ds1:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        password: 123456
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://192.168.137.112:3306/ds1
+        username: root
+      ds2:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        password: 123456
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://192.168.137.117:3306/ds2?useSSL=false&allowPublicKeyRetrieval=true
+        username: root
+      names: ds0,ds1,ds2
+    sharding:
+      tables:
+        user:
+          actual-data-nodes: ds$->{0..2}.user$->{0..1}
+          table-strategy:
+            standard:
+              precise-algorithm-class-name: com.mastercard.db.split.rule.TableShardingAlgorithm
+              sharding-column: user_id
+          database-strategy:
+            standard:
+              precise-algorithm-class-name: com.mastercard.db.split.rule.DbShardingAlgorithm
+              sharding-column: user_id
+    props:
+      sql.show: true
+server:
+  port: 8081
+
+
+
+
+
